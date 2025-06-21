@@ -1,14 +1,20 @@
-import { createDefaultEsmPreset } from "ts-jest";
+import { createDefaultEsmPreset } from 'ts-jest'
 
-const tsJestTransformCfg = createDefaultEsmPreset().transform;
+const presetConfig = createDefaultEsmPreset({
+  //...options
+})
+
 
 /** @type {import("jest").Config} **/
 export default {
-   testEnvironment: "node",
-   transform: {
-      ...tsJestTransformCfg,
-   },
-   collectCoverage: true,
-   coverageDirectory: "./coverage",
-   collectCoverageFrom: ["src/**/*.ts"],
+  testEnvironment: "node",
+  ...presetConfig,
+  moduleNameMapper: {
+   '^@todo-creation/(.*).js$': '<rootDir>/src/todo-creation/$1',
+   '^@tests/(.*).js$': '<rootDir>/tests/$1',
+ },
+ moduleFileExtensions: ['ts', 'js', 'json'],
+ collectCoverage: true,
+ collectCoverageFrom: ["./src/**/*.ts"],
+ coverageDirectory: "coverage"
 };
