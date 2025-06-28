@@ -1,0 +1,14 @@
+src/
+node_modules/
+docs/
+.husky/
+.eslintrc
+.prettier*
+.npmignore
+.editorconfig
+commitlint.config.js
+tsconfig*.json
+*.log
+.vscode/
+jest.config.js
+coverage/

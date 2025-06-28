@@ -21,12 +21,7 @@
       "paths": {
          "@todo-creation/*": ["./src/todo-creation/*"],
          "@tests/*": ["./tests/*"]
-       },
- 
+      }
    },
-   "include": [
-      "./src",
-      "./tests",
-      "jest.config.js"
-   ],
+   "include": ["./src", "./tests", "jest.config.js"]
 }
