@@ -4,7 +4,7 @@
    "description": "A simple TypeScript template for Node.js projects",
    "repository": {
       "type": "git",
-      "url": "https://github.com/tiffan-source/todo-usecase-default.git"
+      "url": "git+https://github.com/tiffan-source/todo-usecase-default.git"
    },
    "scripts": {
       "lint": "npx eslint --fix",
