@@ -13,7 +13,8 @@
       "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
       "prepare": "husky",
       "build": "npx tsc -p tsconfig.build.json",
-      "start": "node dist/src/index.js"
+      "start": "node dist/src/index.js",
+      "release": "npm run build && changeset publish"
    },
    "keywords": [
       "typescript",
