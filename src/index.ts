@@ -11,6 +11,8 @@ export * from "./todo-creation/validations/create-todo.validation.js";
 // 📦 todo-modification
 export * from "./todo-modification/usecases/mark-todo-as-completed.interactor.js";
 export * from "./todo-modification/usecases/mark-todo-as-uncompleted.interactor.js";
+export * from "./todo-modification/validations/mark-todo-as-completed.validation.js";
+export * from "./todo-modification/validations/mark-todo-as-uncompleted.validation.js";
 
 // 📦 todo-retrieval
 export * from "./todo-retrieval/usecases/get-all-todo.interactor.js";
