@@ -1,5 +1,11 @@
 # todo-usecase-default
 
+## 1.6.0
+
+### Minor Changes
+
+- e2230fd: test validation on mark todo
+
 ## 1.5.0
 
 ### Minor Changes
