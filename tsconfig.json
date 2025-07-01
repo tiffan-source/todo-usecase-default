@@ -20,6 +20,8 @@
       "rootDirs": ["./src", "./tests"],
       "paths": {
          "@todo-creation/*": ["./src/todo-creation/*"],
+         "@todo-retrieval/*": ["./src/todo-retrieval/*"],
+         "@todo-modification/*": ["./src/todo-modification/*"],
          "@tests/*": ["./tests/*"]
       }
    },

@@ -1,6 +1,6 @@
 {
    "name": "todo-usecase-default",
-   "version": "1.2.1",
+   "version": "1.4.0",
    "description": "A simple TypeScript template for Node.js projects",
    "repository": {
       "type": "git",
@@ -14,7 +14,9 @@
       "prepare": "husky",
       "build": "npx tsc -p tsconfig.build.json",
       "start": "node dist/src/index.js",
-      "release": "npm run build && changeset publish"
+      "changeset": "npx changeset",
+      "version": "changeset version",
+      "release": "changeset publish"
    },
    "keywords": [
       "typescript",

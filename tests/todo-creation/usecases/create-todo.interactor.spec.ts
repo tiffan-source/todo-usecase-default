@@ -13,7 +13,7 @@ import type { ITodoFactory } from "todo-entity";
 import { CreateTodoInteractor } from "@todo-creation/usecases/create-todo.interactor.js";
 import {
    inputTodoMock,
-   outputTodoMock,
+   outputTodoRepositoryMock,
 } from "@tests/todo-creation/mocks/todo.mock.js";
 
 describe("CreateTodoInteractor", () => {
@@ -96,7 +96,7 @@ describe("CreateTodoInteractor", () => {
    it("should call presenter to return todo", async () => {
       const verify = jest.spyOn(presenter, "present");
 
-      repository.execute.mockResolvedValue(outputTodoMock);
+      repository.execute.mockResolvedValue(outputTodoRepositoryMock);
 
       await createTodo.execute(inputTodoTest);
 
@@ -104,9 +104,9 @@ describe("CreateTodoInteractor", () => {
          success: true,
          error: null,
          result: {
-            todoId: outputTodoMock.getId(),
-            title: outputTodoMock.getTitle(),
-            description: outputTodoMock.getDescription(),
+            todoId: outputTodoRepositoryMock.getId(),
+            title: outputTodoRepositoryMock.getTitle(),
+            description: outputTodoRepositoryMock.getDescription(),
          },
       });
    });
