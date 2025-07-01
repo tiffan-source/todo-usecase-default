@@ -1,5 +1,11 @@
 # todo-usecase-default
 
+## 1.5.0
+
+### Minor Changes
+
+- 3ffa836: non test validator for mark todo
+
 ## 1.4.0
 
 ### Minor Changes
