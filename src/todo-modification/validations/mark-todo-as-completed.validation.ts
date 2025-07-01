@@ -13,7 +13,7 @@ export class MarkTodoAsCompletedValidation
    validate(input: inputDto<MarkTodoAsCompletedInput>): void {
       if (!input.input.todoId) {
          this.validationErrors.push(
-            new ValidationError("Todo ID is required", "todoId"),
+            new ValidationError("required", "todoId", "Todo ID is required"),
          );
       }
    }

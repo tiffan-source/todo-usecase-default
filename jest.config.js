@@ -1,19 +1,19 @@
-import { createDefaultEsmPreset } from "ts-jest";
+import { createDefaultEsmPreset, pathsToModuleNameMapper } from "ts-jest";
 
 const presetConfig = createDefaultEsmPreset({
    //...options
 });
 
+import config from "./tsconfig.json" assert { type: "json" };
+
 /** @type {import("jest").Config} **/
 export default {
    testEnvironment: "node",
    ...presetConfig,
-   moduleNameMapper: {
-      "^@todo-creation/(.*).js$": "<rootDir>/src/todo-creation/$1",
-      "^@todo-modification/(.*).js$": "<rootDir>/src/todo-modification/$1",
-      "^@todo-retrieval/(.*).js$": "<rootDir>/src/todo-retrieval/$1",
-      "^@tests/(.*).js$": "<rootDir>/tests/$1",
-   },
+   moduleNameMapper: pathsToModuleNameMapper(config.compilerOptions.paths, {
+      prefix: "<rootDir>/",
+      useESM: true,
+   }),
    moduleFileExtensions: ["ts", "js", "json"],
    collectCoverage: true,
    collectCoverageFrom: ["./src/**/*.ts"],

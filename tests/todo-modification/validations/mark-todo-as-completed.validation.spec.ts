@@ -1,49 +1,52 @@
-// import { MarkTodoAsCompletedValidation } from "@todo-modification/validations/mark-todo-as-completed.validation.js";
-// import type { inputDto, MarkTodoAsCompletedInput } from "todo-usecase";
+import { MarkTodoAsCompletedValidation } from "@todo-modification/validations/mark-todo-as-completed.validation.js";
+import type { inputDto, MarkTodoAsCompletedInput } from "todo-usecase";
 
-// describe('MarkTodoAsCompletedValidation', () => {
-//    let validator: MarkTodoAsCompletedValidation;
+describe("MarkTodoAsCompletedValidation", () => {
+   let validator: MarkTodoAsCompletedValidation;
 
-//    let valideInput: inputDto<MarkTodoAsCompletedInput> = {
-//       timestamp: new Date(),
-//       input: {
-//          todoId: "valid-todo-id"
-//       }
-//    };
+   const valideInput: inputDto<MarkTodoAsCompletedInput> = {
+      timestamp: new Date(),
+      input: {
+         todoId: "valid-todo-id",
+      },
+   };
 
-//    let unvalideInput: inputDto<MarkTodoAsCompletedInput> = {
-//       timestamp: new Date(),
-//       input: {
-//          todoId: ""
-//       }
-//    };
+   const unvalideInput: inputDto<MarkTodoAsCompletedInput> = {
+      timestamp: new Date(),
+      input: {
+         todoId: "",
+      },
+   };
 
-//    beforeEach(() => {
-//       validator = new MarkTodoAsCompletedValidation();
-//    });
+   beforeEach(() => {
+      validator = new MarkTodoAsCompletedValidation();
+   });
 
-//    it("should be defined", () => {
-//       expect(MarkTodoAsCompletedValidation).toBeDefined();
-//       expect(validator).toBeDefined();
-//    });
+   it("should be defined", () => {
+      expect(MarkTodoAsCompletedValidation).toBeDefined();
+      expect(validator).toBeDefined();
+   });
 
-//    it("should not get Error if todo have valid id", () => {
-//       validator.validate(valideInput);
+   it("should not get Error if todo have valid id", () => {
+      validator.validate(valideInput);
 
-//       expect(validator.isValid()).toBeTruthy();
-//       expect(validator.getErrors()).toEqual([]);
-//    });
+      expect(validator.isValid()).toBeTruthy();
+      expect(validator.getErrors()).toEqual([]);
+   });
 
-//    it("should get Error if todo have invalid id", () => {
-//       validator.validate(unvalideInput);
+   it("should get Error if todo have invalid id", () => {
+      validator.validate(unvalideInput);
 
-//       expect(validator.isValid()).toBeFalsy();
-//       expect(validator.getErrors()).toEqual([
-//          { field: "todoId", message: "Todo ID is required" }
-//       ]);
-//    });
-
-// });
+      expect(validator.isValid()).toBeFalsy();
+      expect(validator.getErrors()).toEqual([
+         {
+            field: "todoId",
+            customMessage: "Todo ID is required",
+            rule: "required",
+         },
+      ]);
+   });
+});
 
 it("should be ok", () => {
    expect(1).toBe(1);

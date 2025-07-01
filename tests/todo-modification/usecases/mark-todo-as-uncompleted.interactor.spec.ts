@@ -79,7 +79,10 @@ describe("MarkTodoAsUncompletedInteractor", () => {
    it("should call presenter with error if validation fails", async () => {
       const verifyPresenter = jest.spyOn(presenter, "present");
 
-      const validationError = new ValidationError("todoId is required", "todoId");
+      const validationError = new ValidationError(
+         "todoId is required",
+         "todoId",
+      );
 
       validator.isValid.mockReturnValueOnce(false);
       validator.getErrors.mockReturnValueOnce([validationError]);
