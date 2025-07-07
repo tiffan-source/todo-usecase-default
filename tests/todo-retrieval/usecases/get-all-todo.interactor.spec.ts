@@ -10,6 +10,7 @@ describe("GetAllTodoInteractor", () => {
 
    const presenter = {
       present: jest.fn(),
+      setCallback: jest.fn(),
    };
 
    const getAllTodo = new GetAllTodoInteractor(repository, presenter);

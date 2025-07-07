@@ -34,6 +34,7 @@ describe("MarkTodoAsCompletedInteractor", () => {
 
    const presenter: jest.Mocked<IMarkTodoAsCompletedPresenter> = {
       present: jest.fn(),
+      setCallback: jest.fn(),
    };
 
    const validator: jest.Mocked<IMarkTodoAsCompletedValidation> = {

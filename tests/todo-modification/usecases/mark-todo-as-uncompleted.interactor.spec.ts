@@ -35,6 +35,7 @@ describe("MarkTodoAsUncompletedInteractor", () => {
 
    const presenter: jest.Mocked<IMarkTodoAsUncompletedPresenter> = {
       present: jest.fn(),
+      setCallback: jest.fn(),
    };
 
    const validator: jest.Mocked<IMarkTodoAsUncompletedValidation> = {
