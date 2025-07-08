@@ -1,6 +1,6 @@
 {
    "name": "todo-usecase-default",
-   "version": "1.6.1",
+   "version": "1.6.2",
    "description": "A simple TypeScript template for Node.js projects",
    "repository": {
       "type": "git",
