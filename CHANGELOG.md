@@ -1,5 +1,11 @@
 # todo-usecase-default
 
+## 1.7.1
+
+### Patch Changes
+
+- 83605d6: catch unexpected error from interactor
+
 ## 1.7.0
 
 ### Minor Changes
