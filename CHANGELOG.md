@@ -1,5 +1,11 @@
 # todo-usecase-default
 
+## 1.7.0
+
+### Minor Changes
+
+- 4926de8: get all uncompleted todo implementation
+
 ## 1.6.2
 
 ### Patch Changes

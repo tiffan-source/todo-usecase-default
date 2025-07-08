@@ -16,3 +16,4 @@ export * from "./todo-modification/validations/mark-todo-as-uncompleted.validati
 
 // 📦 todo-retrieval
 export * from "./todo-retrieval/usecases/get-all-todo.interactor.js";
+export * from "./todo-retrieval/usecases/get-uncompleted-todos.interactor.js";
