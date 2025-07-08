@@ -1,5 +1,11 @@
 # todo-usecase-default
 
+## 1.6.2
+
+### Patch Changes
+
+- 784cb26: update todo-usecase version
+
 ## 1.6.1
 
 ### Patch Changes
