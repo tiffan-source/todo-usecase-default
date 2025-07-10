@@ -22,6 +22,8 @@
          "@todo-creation/*": ["./src/todo-creation/*"],
          "@todo-retrieval/*": ["./src/todo-retrieval/*"],
          "@todo-modification/*": ["./src/todo-modification/*"],
+         "@label-creation/*": ["./src/label-creation/*"],
+         "@label-retrieval/*": ["./src/label-retrieval/*"],
          "@tests/*": ["./tests/*"]
       }
    },

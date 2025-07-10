@@ -65,7 +65,7 @@ describe("CreateTodoInteractor", () => {
       todoInput.create = jest.fn().mockReturnValue(inputTodoMock);
    });
 
-   it("shoudl be define", () => {
+   it("should be define", () => {
       expect(CreateTodoInteractor).toBeDefined();
       expect(createTodo).toBeDefined();
       expect(createTodo.execute).toBeDefined();
@@ -133,7 +133,7 @@ describe("CreateTodoInteractor", () => {
       });
    });
 
-   it("it shoudl call present with error if execute of repository return error", async () => {
+   it("it should call present with error if execute of repository return error", async () => {
       const verify = jest.spyOn(presenter, "present");
       const repoError = new Error("Erreur lors de l'enregistrement");
 
@@ -152,7 +152,7 @@ describe("CreateTodoInteractor", () => {
       });
    });
 
-   it("it should return undefine", async () => {
+   it("it should return undefined", async () => {
       const result = await createTodo.execute(inputTodoTest);
       expect(result).toBeUndefined();
    });

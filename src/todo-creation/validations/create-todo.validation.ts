@@ -13,7 +13,7 @@ export class CreateTodoValidation
    validate(input: inputDto<CreateTodoInput>): void {
       if (!input.input.title) {
          this.validationErrors.push(
-            new ValidationError("Title is required", "title"),
+            new ValidationError("required", "title", "Title is required"),
          );
       }
    }
