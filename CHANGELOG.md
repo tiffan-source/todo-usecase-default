@@ -1,5 +1,13 @@
 # todo-usecase-default
 
+## 1.8.0
+
+### Minor Changes
+
+- 339af0c: - create label interface implementation for interactor and validation
+  - delete label interface implementation for interactor and validation
+  - get all label interface implementation for interactor
+
 ## 1.7.1
 
 ### Patch Changes

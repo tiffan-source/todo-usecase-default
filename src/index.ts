@@ -4,6 +4,15 @@
 // 📦 common
 export * from "./common/validation.js";
 
+// 📦 label-creation
+export * from "./label-creation/usecases/create-label.interactor.js";
+export * from "./label-creation/usecases/delete-label.interactor.js";
+export * from "./label-creation/validations/create-label.validation.js";
+export * from "./label-creation/validations/delete-label.validation.js";
+
+// 📦 label-retrieval
+export * from "./label-retrieval/usecases/get-all-label.interactor.js";
+
 // 📦 todo-creation
 export * from "./todo-creation/usecases/create-todo.interactor.js";
 export * from "./todo-creation/validations/create-todo.validation.js";
