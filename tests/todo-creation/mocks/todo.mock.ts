@@ -1,4 +1,4 @@
-import type { ITodo } from "todo-entity";
+import type { ILabel, ITodo } from "todo-entity";
 import { jest } from "@jest/globals";
 
 export const inputTodoMock: jest.Mocked<ITodo> = {
@@ -15,6 +15,16 @@ export const inputTodoMock: jest.Mocked<ITodo> = {
    addLabel: jest.fn(),
    getLabels: jest.fn(),
 };
+
+export const intputLabelListMock: jest.Mocked<ILabel[]> = [
+   {
+      getId: jest.fn(),
+      getName: jest.fn(),
+      getColor: jest.fn(),
+      setColor: jest.fn(),
+      setName: jest.fn(),
+   },
+];
 
 export const outputTodoRepositoryMock: jest.Mocked<ITodo> = {
    getId: jest.fn<() => string>().mockReturnValue("randomId"),
