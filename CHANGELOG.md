@@ -1,5 +1,11 @@
 # todo-usecase-default
 
+## 2.0.0
+
+### Major Changes
+
+- a87f013: permit create todo to create with non existing label
+
 ## 1.8.0
 
 ### Minor Changes
