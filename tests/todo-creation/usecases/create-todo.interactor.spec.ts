@@ -3,27 +3,43 @@ import {
    type CreateTodoInput,
    type CreateTodoRepositoryInput,
    type CreateTodoRepositoryOutput,
+   type ICheckLabelExistRepository,
+   type ICreateLabelRepository,
    type ICreateTodoPresenter,
    type ICreateTodoRepository,
    type ICreateTodoValidation,
+   type IGetLabelByIdRepository,
    type inputDto,
 } from "todo-usecase";
 import { jest } from "@jest/globals";
-import type { ITodoFactory } from "todo-entity";
+import type { ILabel, ILabelFactory, ITodoFactory } from "todo-entity";
 import { CreateTodoInteractor } from "@todo-creation/usecases/create-todo.interactor.js";
 import {
    inputTodoMock,
    outputTodoRepositoryMock,
 } from "@tests/todo-creation/mocks/todo.mock.js";
+import { nonExistingLabelMock } from "@tests/todo-creation/mocks/label.mock.js";
 
 describe("CreateTodoInteractor", () => {
-   const repository: jest.Mocked<ICreateTodoRepository> = {
+   const createTodoRepo: jest.Mocked<ICreateTodoRepository> = {
       execute:
          jest.fn<
             (
                input: CreateTodoRepositoryInput,
             ) => Promise<CreateTodoRepositoryOutput>
          >(),
+   };
+
+   const createLabelRepo: jest.Mocked<ICreateLabelRepository> = {
+      execute: jest.fn(),
+   };
+
+   const checkLabelRepo: jest.Mocked<ICheckLabelExistRepository> = {
+      execute: jest.fn(),
+   };
+
+   const getLabelByIdRepo: jest.Mocked<IGetLabelByIdRepository> = {
+      execute: jest.fn(),
    };
 
    const presenter: jest.Mocked<ICreateTodoPresenter> = {
@@ -41,11 +57,19 @@ describe("CreateTodoInteractor", () => {
       create: jest.fn(),
    };
 
+   const labelFactory: jest.Mocked<ILabelFactory> = {
+      create: jest.fn(),
+   };
+
    const createTodo = new CreateTodoInteractor(
       validator,
-      repository,
+      createTodoRepo,
+      createLabelRepo,
+      checkLabelRepo,
+      getLabelByIdRepo,
       presenter,
       todoInput,
+      labelFactory,
    );
 
    const inputTodoTest: inputDto<CreateTodoInput> = {
@@ -56,6 +80,16 @@ describe("CreateTodoInteractor", () => {
       },
    };
 
+   const inputTodoWithNonExistingLabelTest: inputDto<CreateTodoInput> = {
+      timestamp: "randomtime",
+      input: {
+         title: "test title",
+         description: "test description",
+         labelIds: ["1", "2"],
+         newLabelTitles: ["existing-label", "non-existing-label"],
+      },
+   };
+
    afterEach(() => {
       jest.clearAllMocks();
    });
@@ -63,6 +97,7 @@ describe("CreateTodoInteractor", () => {
    beforeEach(() => {
       validator.isValid = jest.fn<() => boolean>().mockReturnValue(true);
       todoInput.create = jest.fn().mockReturnValue(inputTodoMock);
+      labelFactory.create = jest.fn().mockReturnValue(nonExistingLabelMock);
    });
 
    it("should be define", () => {
@@ -81,8 +116,8 @@ describe("CreateTodoInteractor", () => {
       expect(verifyIsValid).toHaveBeenCalledTimes(1);
    });
 
-   it("should call execute of repository to save todo create in db", async () => {
-      const verifyRepo = jest.spyOn(repository, "execute");
+   it("should call execute of createTodoRepo to save todo create in db", async () => {
+      const verifyRepo = jest.spyOn(createTodoRepo, "execute");
 
       inputTodoMock.getTitle.mockReturnValue(inputTodoTest.input.title);
       inputTodoMock.getDescription.mockReturnValue(
@@ -94,10 +129,106 @@ describe("CreateTodoInteractor", () => {
       expect(verifyRepo).toHaveBeenNthCalledWith(1, inputTodoMock);
    });
 
+   it("should call checkLabelRepository if newLabelTitles is provided", async () => {
+      const verifyCheckLabel = jest.spyOn(checkLabelRepo, "execute");
+
+      await createTodo.execute(inputTodoWithNonExistingLabelTest);
+
+      const titles = inputTodoWithNonExistingLabelTest.input.newLabelTitles;
+
+      expect(verifyCheckLabel).toHaveBeenCalledWith(titles?.[0]);
+      expect(verifyCheckLabel).toHaveBeenCalledWith(titles?.[1]);
+   });
+
+   it("should call createLabelRepository if newLabelTitles is provided only for non existing label", async () => {
+      const verifyCreateLabel = jest.spyOn(createLabelRepo, "execute");
+
+      checkLabelRepo.execute.mockImplementation((title: string) =>
+         Promise.resolve(title === "existing-label" ? true : false),
+      );
+      await createTodo.execute(inputTodoWithNonExistingLabelTest);
+
+      labelFactory.create.mockReturnValue(nonExistingLabelMock);
+      expect(verifyCreateLabel).toHaveBeenNthCalledWith(
+         1,
+         nonExistingLabelMock,
+      );
+      expect(verifyCreateLabel).toHaveBeenCalledTimes(1);
+   });
+
+   it("should call presenter to return todo with labels", async () => {
+      const verify = jest.spyOn(presenter, "present");
+
+      outputTodoRepositoryMock.getTitle.mockReturnValue("test title");
+      outputTodoRepositoryMock.getDescription.mockReturnValue(
+         "test description",
+      );
+
+      outputTodoRepositoryMock.getLabels.mockReturnValue([
+         {
+            getId: jest.fn<() => string>().mockReturnValue("1"),
+            getName: jest.fn<() => string>().mockReturnValue("existing-label"),
+            getColor: jest.fn<() => string>(),
+            setColor: jest.fn<(color: string) => string>(),
+            setName: jest.fn<(name: string) => string>(),
+         },
+         {
+            getId: jest.fn<() => string>().mockReturnValue("2"),
+            getName: jest.fn<() => string>().mockReturnValue("existing-label"),
+            getColor: jest.fn<() => string>(),
+            setColor: jest.fn<(color: string) => string>(),
+            setName: jest.fn<(name: string) => string>(),
+         },
+         {
+            getId: jest
+               .fn<() => string>()
+               .mockReturnValue("non-existing-label-id"),
+            getName: jest
+               .fn<() => string>()
+               .mockReturnValue("non-existing-label"),
+            getColor: jest.fn<() => string>(),
+            setColor: jest.fn<(color: string) => string>(),
+            setName: jest.fn<(name: string) => string>(),
+         },
+      ]);
+      createTodoRepo.execute.mockResolvedValue(outputTodoRepositoryMock);
+
+      await createTodo.execute(inputTodoWithNonExistingLabelTest);
+
+      expect(verify).toHaveBeenNthCalledWith(1, {
+         success: true,
+         error: null,
+         result: {
+            todoId: outputTodoRepositoryMock.getId(),
+            title: outputTodoRepositoryMock.getTitle(),
+            description: outputTodoRepositoryMock.getDescription(),
+            doneDate: outputTodoRepositoryMock.getDoneDate(),
+            dueDate: outputTodoRepositoryMock.getDueDate(),
+            labels: [
+               {
+                  id: "1",
+                  name: "existing-label",
+                  color: undefined,
+               },
+               {
+                  id: "2",
+                  name: "existing-label",
+                  color: undefined,
+               },
+               {
+                  id: "non-existing-label-id",
+                  name: "non-existing-label",
+                  color: undefined,
+               },
+            ],
+         },
+      });
+   });
+
    it("should call presenter to return todo", async () => {
       const verify = jest.spyOn(presenter, "present");
 
-      repository.execute.mockResolvedValue(outputTodoRepositoryMock);
+      createTodoRepo.execute.mockResolvedValue(outputTodoRepositoryMock);
 
       await createTodo.execute(inputTodoTest);
 
@@ -108,6 +239,15 @@ describe("CreateTodoInteractor", () => {
             todoId: outputTodoRepositoryMock.getId(),
             title: outputTodoRepositoryMock.getTitle(),
             description: outputTodoRepositoryMock.getDescription(),
+            doneDate: outputTodoRepositoryMock.getDoneDate(),
+            dueDate: outputTodoRepositoryMock.getDueDate(),
+            labels: outputTodoRepositoryMock
+               .getLabels()
+               .map((label: ILabel) => ({
+                  id: label.getId(),
+                  name: label.getName(),
+                  color: label.getColor(),
+               })),
          },
       });
    });
@@ -133,11 +273,11 @@ describe("CreateTodoInteractor", () => {
       });
    });
 
-   it("it should call present with error if execute of repository return error", async () => {
+   it("it should call present with error if execute of createTodoRepo return error", async () => {
       const verify = jest.spyOn(presenter, "present");
       const repoError = new Error("Erreur lors de l'enregistrement");
 
-      repository.execute.mockRejectedValue(repoError);
+      createTodoRepo.execute.mockRejectedValue(repoError);
 
       await createTodo.execute(inputTodoTest);
 

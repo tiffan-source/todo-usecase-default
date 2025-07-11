@@ -1,10 +1,13 @@
-import type { ITodo, ITodoFactory } from "todo-entity";
+import type { ILabel, ILabelFactory, ITodo, ITodoFactory } from "todo-entity";
 import type {
    CreateTodoInput,
+   ICheckLabelExistRepository,
+   ICreateLabelRepository,
    ICreateTodoInteractor,
    ICreateTodoPresenter,
    ICreateTodoRepository,
    ICreateTodoValidation,
+   IGetLabelByIdRepository,
    inputDto,
 } from "todo-usecase";
 
@@ -12,8 +15,12 @@ export class CreateTodoInteractor implements ICreateTodoInteractor {
    constructor(
       private readonly validation: ICreateTodoValidation,
       private readonly repository: ICreateTodoRepository,
+      private readonly createLabelRepository: ICreateLabelRepository,
+      private readonly checkLabelRepository: ICheckLabelExistRepository,
+      private readonly getLabelRepository: IGetLabelByIdRepository,
       private readonly presenter: ICreateTodoPresenter,
       private readonly todoFactory: ITodoFactory,
+      private readonly labelFactory: ILabelFactory,
    ) {}
 
    async execute(input: inputDto<CreateTodoInput>): Promise<void> {
@@ -37,6 +44,27 @@ export class CreateTodoInteractor implements ICreateTodoInteractor {
          const todo: ITodo = this.todoFactory.create(title);
          todo.describe(description || "");
 
+         // Label gestion
+
+         for (const label of input.input.newLabelTitles || []) {
+            const labelExist = await this.checkLabelRepository.execute(label);
+
+            if (!labelExist) {
+               const newLabel = await this.createLabelRepository.execute(
+                  this.labelFactory.create(label),
+               );
+               todo.addLabel(newLabel);
+            }
+         }
+
+         for (const labelId of input.input.labelIds || []) {
+            const label = await this.getLabelRepository.execute(labelId);
+
+            if (label) {
+               todo.addLabel(label);
+            }
+         }
+
          const todoResult = await this.repository.execute(todo);
 
          return this.presenter.present({
@@ -47,6 +75,11 @@ export class CreateTodoInteractor implements ICreateTodoInteractor {
                description: todoResult.getDescription(),
                doneDate: todoResult.getDoneDate(),
                dueDate: todoResult.getDueDate(),
+               labels: todoResult.getLabels().map((label: ILabel) => ({
+                  id: label.getId(),
+                  name: label.getName(),
+                  color: label.getColor(),
+               })),
             },
             error: null,
          });
