@@ -6,7 +6,7 @@ export const inputTodoMock: jest.Mocked<ITodo> = {
    getTitle: jest.fn<() => string>().mockReturnValue("test title"),
    getDescription: jest.fn<() => string>().mockReturnValue("test description"),
    getDoneDate: jest.fn(),
-   getDueDate: jest.fn(),
+   getDueDate: jest.fn(() => new Date("2023-10-01T00:00:00Z")),
    describe: jest.fn(),
    accomplish: jest.fn(),
    resurrect: jest.fn(),

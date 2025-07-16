@@ -39,14 +39,15 @@ export class CreateTodoInteractor implements ICreateTodoInteractor {
             });
          }
 
-         const { title, description } = input.input;
+         const { title, description, newLabelTitles, labelIds, dueDate } =
+            input.input;
 
          const todo: ITodo = this.todoFactory.create(title);
          todo.describe(description || "");
 
          // Label gestion
 
-         for (const label of input.input.newLabelTitles || []) {
+         for (const label of newLabelTitles || []) {
             const labelExist = await this.checkLabelRepository.execute(label);
 
             if (!labelExist) {
@@ -57,12 +58,17 @@ export class CreateTodoInteractor implements ICreateTodoInteractor {
             }
          }
 
-         for (const labelId of input.input.labelIds || []) {
+         for (const labelId of labelIds || []) {
             const label = await this.getLabelRepository.execute(labelId);
 
             if (label) {
                todo.addLabel(label);
             }
+         }
+
+         // Due date gestion
+         if (dueDate) {
+            todo.addDeadline(dueDate);
          }
 
          const todoResult = await this.repository.execute(todo);

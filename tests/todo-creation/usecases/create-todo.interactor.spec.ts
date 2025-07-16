@@ -77,6 +77,7 @@ describe("CreateTodoInteractor", () => {
       input: {
          title: "test title",
          description: "test description",
+         dueDate: new Date("2023-10-01T00:00:00Z"),
       },
    };
 
