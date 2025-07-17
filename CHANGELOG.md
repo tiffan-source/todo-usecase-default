@@ -1,5 +1,11 @@
 # todo-usecase-default
 
+## 2.1.0
+
+### Minor Changes
+
+- 64d72b7: handle due date when create todo
+
 ## 2.0.0
 
 ### Major Changes
