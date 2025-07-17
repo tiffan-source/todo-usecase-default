@@ -44,7 +44,6 @@ describe("CreateTodoInteractor", () => {
 
    const presenter: jest.Mocked<ICreateTodoPresenter> = {
       present: jest.fn(),
-      setCallback: jest.fn(),
    };
 
    const validator: jest.Mocked<ICreateTodoValidation> = {

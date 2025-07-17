@@ -16,7 +16,6 @@ describe("DeleteLabelInteractor", () => {
 
    const deleteLabelPresenter: jest.Mocked<IDeleteLabelPresenter> = {
       present: jest.fn(),
-      setCallback: jest.fn(),
    };
 
    const deleteLabelValidator: jest.Mocked<IDeleteLabelValidation> = {

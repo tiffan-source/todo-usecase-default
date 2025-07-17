@@ -23,7 +23,6 @@ describe("CreateLabelInteractor", () => {
 
    const presenter: jest.Mocked<ICreateLabelPresenter> = {
       present: jest.fn(),
-      setCallback: jest.fn(),
    };
 
    const validator: jest.Mocked<ICreateLabelValidation> = {
