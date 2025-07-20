@@ -102,3 +102,18 @@ export const allUncompletedTodosByRepoMock: jest.Mocked<ITodo>[] = [
       getLabels: jest.fn(),
    },
 ];
+
+export const todoByIdRepoMock: jest.Mocked<ITodo> = {
+   getId: jest.fn<() => string>().mockReturnValue("randomId"),
+   getTitle: jest.fn<() => string>().mockReturnValue("test title"),
+   getDescription: jest.fn<() => string>().mockReturnValue("test description"),
+   getDoneDate: jest.fn(),
+   getDueDate: jest.fn(),
+   describe: jest.fn(),
+   accomplish: jest.fn(),
+   resurrect: jest.fn(),
+   addDeadline: jest.fn(),
+   reportDeadline: jest.fn(),
+   addLabel: jest.fn(),
+   getLabels: jest.fn(),
+};
