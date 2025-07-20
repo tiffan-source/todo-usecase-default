@@ -1,5 +1,13 @@
 # todo-usecase-default
 
+## 3.0.0
+
+### Major Changes
+
+- caa62bf: maj todo usecase to v5
+  delete get all todo not done
+  update get all todo to add filter
+
 ## 2.1.0
 
 ### Minor Changes
@@ -17,8 +25,8 @@
 ### Minor Changes
 
 - 339af0c: - create label interface implementation for interactor and validation
-   - delete label interface implementation for interactor and validation
-   - get all label interface implementation for interactor
+  - delete label interface implementation for interactor and validation
+  - get all label interface implementation for interactor
 
 ## 1.7.1
 
