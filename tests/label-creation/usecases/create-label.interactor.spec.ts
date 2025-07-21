@@ -33,6 +33,7 @@ describe("CreateLabelInteractor", () => {
 
    const labelFactory: jest.Mocked<ILabelFactory> = {
       create: jest.fn(),
+      createWithId: jest.fn(),
    };
 
    const createLabelInteractor = new CreateLabelInteractor(

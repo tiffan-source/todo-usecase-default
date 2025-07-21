@@ -1,4 +1,4 @@
-import type { ITodo } from "todo-entity";
+import type { ILabel, ITodo } from "todo-entity";
 import { jest } from "@jest/globals";
 
 export const outputTodoNonCompletedRepositoryMock: jest.Mocked<ITodo> = {
@@ -19,6 +19,8 @@ export const outputTodoNonCompletedRepositoryMock: jest.Mocked<ITodo> = {
    reportDeadline: jest.fn(),
    addLabel: jest.fn(),
    getLabels: jest.fn(),
+   removeLabel: jest.fn(),
+   modifyTitle: jest.fn(),
 };
 
 export const outputTodoCompletedRepositoryMock: jest.Mocked<ITodo> = {
@@ -37,4 +39,31 @@ export const outputTodoCompletedRepositoryMock: jest.Mocked<ITodo> = {
    reportDeadline: jest.fn(),
    addLabel: jest.fn(),
    getLabels: jest.fn(),
+   removeLabel: jest.fn(),
+   modifyTitle: jest.fn(),
+};
+
+export const fakeTodoToEdit: jest.Mocked<ITodo> = {
+   getId: jest.fn<() => string>().mockReturnValue("123"),
+   getTitle: jest.fn<() => string>().mockReturnValue("title"),
+   getDescription: jest.fn<() => string>().mockReturnValue("desc"),
+   getDoneDate: jest.fn(),
+   getDueDate: jest.fn(),
+   getLabels: jest.fn<() => ILabel[]>().mockReturnValue([
+      {
+         getId: jest.fn<() => string>().mockReturnValue("label1"),
+         getName: jest.fn<() => string>().mockReturnValue("label1"),
+         getColor: jest.fn<() => string>(),
+         setColor: jest.fn<(color: string) => string>(),
+         setName: jest.fn<(name: string) => string>(),
+      },
+   ]),
+   modifyTitle: jest.fn(),
+   describe: jest.fn(),
+   addDeadline: jest.fn(),
+   addLabel: jest.fn(),
+   removeLabel: jest.fn(),
+   accomplish: jest.fn(),
+   resurrect: jest.fn(),
+   reportDeadline: jest.fn(),
 };

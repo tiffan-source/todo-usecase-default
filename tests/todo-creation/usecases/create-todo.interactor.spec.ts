@@ -54,10 +54,12 @@ describe("CreateTodoInteractor", () => {
 
    const todoInput: jest.Mocked<ITodoFactory> = {
       create: jest.fn(),
+      createWithId: jest.fn(),
    };
 
    const labelFactory: jest.Mocked<ILabelFactory> = {
       create: jest.fn(),
+      createWithId: jest.fn(),
    };
 
    const createTodo = new CreateTodoInteractor(

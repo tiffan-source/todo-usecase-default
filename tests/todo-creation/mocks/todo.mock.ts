@@ -14,6 +14,8 @@ export const inputTodoMock: jest.Mocked<ITodo> = {
    reportDeadline: jest.fn(),
    addLabel: jest.fn(),
    getLabels: jest.fn(),
+   removeLabel: jest.fn(),
+   modifyTitle: jest.fn(),
 };
 
 export const intputLabelListMock: jest.Mocked<ILabel[]> = [
@@ -39,4 +41,6 @@ export const outputTodoRepositoryMock: jest.Mocked<ITodo> = {
    reportDeadline: jest.fn(),
    addLabel: jest.fn(),
    getLabels: jest.fn(),
+   removeLabel: jest.fn(),
+   modifyTitle: jest.fn(),
 };

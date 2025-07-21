@@ -52,7 +52,7 @@
       ]
    },
    "dependencies": {
-      "todo-entity": "^1.1.4",
+      "todo-entity": "^2.0.0",
       "todo-usecase": "^5.0.0",
       "validator": "^13.15.15"
    },

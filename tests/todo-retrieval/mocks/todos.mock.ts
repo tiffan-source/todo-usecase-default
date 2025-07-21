@@ -17,6 +17,8 @@ export const allTodosByRepoMock: jest.Mocked<ITodo>[] = [
       reportDeadline: jest.fn(),
       addLabel: jest.fn(),
       getLabels: jest.fn(),
+      removeLabel: jest.fn(),
+      modifyTitle: jest.fn(),
    },
    {
       getId: jest.fn<() => string>().mockReturnValue("randomId2"),
@@ -33,6 +35,8 @@ export const allTodosByRepoMock: jest.Mocked<ITodo>[] = [
       reportDeadline: jest.fn(),
       addLabel: jest.fn(),
       getLabels: jest.fn(),
+      removeLabel: jest.fn(),
+      modifyTitle: jest.fn(),
    },
    {
       getId: jest.fn<() => string>().mockReturnValue("randomId3"),
@@ -49,6 +53,8 @@ export const allTodosByRepoMock: jest.Mocked<ITodo>[] = [
       reportDeadline: jest.fn(),
       addLabel: jest.fn(),
       getLabels: jest.fn(),
+      removeLabel: jest.fn(),
+      modifyTitle: jest.fn(),
    },
 ];
 
@@ -68,6 +74,8 @@ export const allUncompletedTodosByRepoMock: jest.Mocked<ITodo>[] = [
       reportDeadline: jest.fn(),
       addLabel: jest.fn(),
       getLabels: jest.fn(),
+      removeLabel: jest.fn(),
+      modifyTitle: jest.fn(),
    },
    {
       getId: jest.fn<() => string>().mockReturnValue("randomId2"),
@@ -84,6 +92,8 @@ export const allUncompletedTodosByRepoMock: jest.Mocked<ITodo>[] = [
       reportDeadline: jest.fn(),
       addLabel: jest.fn(),
       getLabels: jest.fn(),
+      removeLabel: jest.fn(),
+      modifyTitle: jest.fn(),
    },
    {
       getId: jest.fn<() => string>().mockReturnValue("randomId3"),
@@ -100,6 +110,8 @@ export const allUncompletedTodosByRepoMock: jest.Mocked<ITodo>[] = [
       reportDeadline: jest.fn(),
       addLabel: jest.fn(),
       getLabels: jest.fn(),
+      removeLabel: jest.fn(),
+      modifyTitle: jest.fn(),
    },
 ];
 
@@ -116,4 +128,6 @@ export const todoByIdRepoMock: jest.Mocked<ITodo> = {
    reportDeadline: jest.fn(),
    addLabel: jest.fn(),
    getLabels: jest.fn(),
+   removeLabel: jest.fn(),
+   modifyTitle: jest.fn(),
 };
