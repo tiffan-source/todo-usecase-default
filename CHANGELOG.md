@@ -1,5 +1,11 @@
 # todo-usecase-default
 
+## 3.2.0
+
+### Minor Changes
+
+- ee905ad: implement edit todo interactor and validator
+
 ## 3.1.0
 
 ### Minor Changes
