@@ -1,5 +1,11 @@
 # todo-usecase-default
 
+## 3.1.0
+
+### Minor Changes
+
+- 55b1f2d: add get todo by id handler
+
 ## 3.0.0
 
 ### Major Changes
