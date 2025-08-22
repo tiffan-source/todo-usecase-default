@@ -1,7 +1,6 @@
 import { MarkTodoAsCompletedInteractor } from "@todo-modification/usecases/mark-todo-as-completed.interactor.js";
 import {
    ValidationError,
-   type GetTodoByIdRepositoryOutput,
    type IGetTodoByIdRepository,
    type IMarkTodoAsCompletedPresenter,
    type IMarkTodoAsCompletedValidation,
@@ -11,6 +10,8 @@ import {
 } from "todo-usecase";
 import { outputTodoNonCompletedRepositoryMock } from "@tests/todo-modification/mocks/todo.mock.js";
 import { jest } from "@jest/globals";
+import { GetTodoByIdRepositoryMock } from "@tests/mocks/get-todo-by-id-repository.mock.js";
+import { SaveTodoRepositoryMock } from "@tests/mocks/save-todo-repository.mock.js";
 
 describe("MarkTodoAsCompletedInteractor", () => {
    afterEach(() => {
@@ -24,13 +25,10 @@ describe("MarkTodoAsCompletedInteractor", () => {
       },
    };
 
-   const saveTodoRepository: jest.Mocked<ISaveTodoRepository> = {
-      execute: jest.fn(),
-   };
+   const saveTodoRepository: ISaveTodoRepository = new SaveTodoRepositoryMock();
 
-   const getTodoRepository: jest.Mocked<IGetTodoByIdRepository> = {
-      execute: jest.fn(),
-   };
+   const getTodoRepository: IGetTodoByIdRepository =
+      new GetTodoByIdRepositoryMock();
 
    const presenter: jest.Mocked<IMarkTodoAsCompletedPresenter> = {
       present: jest.fn(),
@@ -50,9 +48,10 @@ describe("MarkTodoAsCompletedInteractor", () => {
    );
 
    beforeEach(() => {
+      jest.clearAllMocks();
       validator.isValid = jest.fn<() => boolean>().mockReturnValue(true);
-      getTodoRepository.execute = jest
-         .fn<() => Promise<GetTodoByIdRepositoryOutput>>()
+      jest
+         .spyOn(getTodoRepository, "getTodoById")
          .mockResolvedValue(outputTodoNonCompletedRepositoryMock);
    });
 
@@ -97,7 +96,7 @@ describe("MarkTodoAsCompletedInteractor", () => {
    });
 
    it("should call execute of get repository to get todo from db", async () => {
-      const verifyRepo = jest.spyOn(getTodoRepository, "execute");
+      const verifyRepo = jest.spyOn(getTodoRepository, "getTodoById");
 
       await markTodoAsCompleted.execute(inputTodoTest);
 
@@ -106,7 +105,7 @@ describe("MarkTodoAsCompletedInteractor", () => {
 
    it("should call presenter with error if todo not found", async () => {
       const verifyPresenter = jest.spyOn(presenter, "present");
-      getTodoRepository.execute.mockResolvedValue(null);
+      jest.spyOn(getTodoRepository, "getTodoById").mockResolvedValue(null);
 
       await markTodoAsCompleted.execute(inputTodoTest);
 
@@ -122,15 +121,15 @@ describe("MarkTodoAsCompletedInteractor", () => {
    });
 
    it("should call execute of save repository to save todo as completed in db", async () => {
-      const verifyRepo = jest.spyOn(saveTodoRepository, "execute");
+      const verifyRepo = jest.spyOn(saveTodoRepository, "saveTodo");
       const verifyTodoCompleted = jest.spyOn(
          outputTodoNonCompletedRepositoryMock,
          "accomplish",
       );
 
-      getTodoRepository.execute.mockResolvedValueOnce(
-         outputTodoNonCompletedRepositoryMock,
-      );
+      jest
+         .spyOn(getTodoRepository, "getTodoById")
+         .mockResolvedValueOnce(outputTodoNonCompletedRepositoryMock);
 
       await markTodoAsCompleted.execute(inputTodoTest);
 

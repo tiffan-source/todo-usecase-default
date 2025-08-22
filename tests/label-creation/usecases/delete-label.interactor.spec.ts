@@ -8,11 +8,11 @@ import {
 } from "todo-usecase";
 import { DeleteLabelInteractor } from "@label-creation/usecases/delete-label.interactor.js";
 import { jest } from "@jest/globals";
+import { DeleteLabelRepositoryMock } from "@tests/mocks/delete-label-repository.mock.js";
 
 describe("DeleteLabelInteractor", () => {
-   const deleteLabelRepository: jest.Mocked<IDeleteLabelRepository> = {
-      execute: jest.fn(),
-   };
+   const deleteLabelRepository: IDeleteLabelRepository =
+      new DeleteLabelRepositoryMock();
 
    const deleteLabelPresenter: jest.Mocked<IDeleteLabelPresenter> = {
       present: jest.fn(),
@@ -43,7 +43,6 @@ describe("DeleteLabelInteractor", () => {
 
    beforeEach(() => {
       deleteLabelValidator.isValid = jest.fn(() => true);
-      deleteLabelRepository.execute = jest.fn(() => Promise.resolve(true));
    });
 
    it("should be defined", () => {
@@ -62,7 +61,7 @@ describe("DeleteLabelInteractor", () => {
    });
 
    it("should call delete label repository execute method", async () => {
-      const verifyRepo = jest.spyOn(deleteLabelRepository, "execute");
+      const verifyRepo = jest.spyOn(deleteLabelRepository, "deleteLabel");
 
       await deleteLabelInteractor.execute(inputLabelId);
 
@@ -105,7 +104,9 @@ describe("DeleteLabelInteractor", () => {
    it("should call presenter with errors if repository fails", async () => {
       const verifyPresenter = jest.spyOn(deleteLabelPresenter, "present");
       const repoError = new Error("Repository error");
-      deleteLabelRepository.execute.mockRejectedValue(repoError);
+      jest
+         .spyOn(deleteLabelRepository, "deleteLabel")
+         .mockRejectedValue(repoError);
 
       await deleteLabelInteractor.execute(inputLabelId);
 
@@ -122,7 +123,7 @@ describe("DeleteLabelInteractor", () => {
 
    it("should call presenter with errors if repository return false", async () => {
       const verifyPresenter = jest.spyOn(deleteLabelPresenter, "present");
-      deleteLabelRepository.execute.mockResolvedValue(false);
+      jest.spyOn(deleteLabelRepository, "deleteLabel").mockResolvedValue(false);
 
       await deleteLabelInteractor.execute(inputLabelId);
 

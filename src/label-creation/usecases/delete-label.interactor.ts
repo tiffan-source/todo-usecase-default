@@ -28,7 +28,7 @@ export class DeleteLabelInteractor implements IDeleteLabelInteractor {
             return;
          }
 
-         const result = await this.deleteLabelRepository.execute(
+         const result = await this.deleteLabelRepository.deleteLabel(
             labelId.input.labelId,
          );
          if (result) {

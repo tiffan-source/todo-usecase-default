@@ -14,7 +14,7 @@ export class GetAllLabelInteractor implements IGetAllLabelInteractor {
    async execute(input: inputDto<void>): Promise<void> {
       try {
          console.log("Executing GetAllLabelInteractor at", input.timestamp);
-         const labels = await this.repository.execute();
+         const labels = await this.repository.getAllLabels();
 
          this.presenter.present({
             success: true,

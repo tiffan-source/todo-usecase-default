@@ -3,9 +3,10 @@ import { allTodosByRepoMock } from "@tests/todo-retrieval/mocks/todos.mock.js";
 import { jest } from "@jest/globals";
 import {
    ValidationError,
-   type GetAllTodoRepositoryOutput,
    type IGetAllTodoValidation,
+   type IGetAllTodoRepository,
 } from "todo-usecase";
+import { GetAllTodoRepositoryMock } from "@tests/mocks/get-all-todo-repository.mock.js";
 
 describe("GetAllTodoInteractor", () => {
    const validation: jest.Mocked<IGetAllTodoValidation> = {
@@ -14,9 +15,7 @@ describe("GetAllTodoInteractor", () => {
       getErrors: jest.fn(),
    };
 
-   const repository = {
-      execute: jest.fn<() => Promise<GetAllTodoRepositoryOutput>>(),
-   };
+   const repository: IGetAllTodoRepository = new GetAllTodoRepositoryMock();
 
    const presenter = {
       present: jest.fn(),
@@ -34,8 +33,11 @@ describe("GetAllTodoInteractor", () => {
    });
 
    beforeEach(() => {
+      jest.clearAllMocks();
       validation.isValid = jest.fn<() => boolean>().mockReturnValue(true);
-      repository.execute = jest.fn(() => Promise.resolve(allTodosByRepoMock));
+      jest
+         .spyOn(repository, "getAllTodos")
+         .mockResolvedValue(allTodosByRepoMock);
    });
 
    it("should be define", () => {
@@ -90,7 +92,7 @@ describe("GetAllTodoInteractor", () => {
    });
 
    it("should call execute of repository to get all Todo", async () => {
-      const verifyRepo = jest.spyOn(repository, "execute");
+      const verifyRepo = jest.spyOn(repository, "getAllTodos");
 
       await getAllTodo.execute({ timestamp: "randomtime", input: {} });
 

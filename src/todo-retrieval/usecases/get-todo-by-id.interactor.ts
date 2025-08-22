@@ -31,7 +31,7 @@ export class GetTodoByIdInteractor implements IGetTodoByIdInteractor {
             return;
          }
 
-         const todo = await this.repository.execute(input.input.idTodo);
+         const todo = await this.repository.getTodoById(input.input.idTodo);
 
          if (!todo) {
             this.presenter.present({

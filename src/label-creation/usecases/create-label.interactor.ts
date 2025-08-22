@@ -36,7 +36,8 @@ export class CreateLabelInteractor implements ICreateLabelInteractor {
             return;
          }
 
-         const labelExists = await this.checkLabelRepository.execute(name);
+         const labelExists =
+            await this.checkLabelRepository.checkLabelExists(name);
 
          if (labelExists) {
             this.createLabelPresenter.present({
@@ -56,7 +57,7 @@ export class CreateLabelInteractor implements ICreateLabelInteractor {
             label.setColor(color);
          }
 
-         await this.createLabelRepository.execute(label);
+         await this.createLabelRepository.createLabel(label);
 
          this.createLabelPresenter.present({
             success: true,

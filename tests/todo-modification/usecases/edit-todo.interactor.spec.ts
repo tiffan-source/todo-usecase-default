@@ -14,6 +14,11 @@ import { EditTodoInteractor } from "@todo-modification/usecases/edit-todo.intera
 import { jest } from "@jest/globals";
 import type { ILabel, ILabelFactory, ITodo } from "todo-entity";
 import { fakeTodoToEdit } from "@tests/todo-modification/mocks/todo.mock.js";
+import { GetTodoByIdRepositoryMock } from "@tests/mocks/get-todo-by-id-repository.mock.js";
+import { CheckLabelExistRepositoryMock } from "@tests/mocks/check-label-exist-repository.mock.js";
+import { CreateLabelRepositoryMock } from "@tests/mocks/create-label-repository.mock.js";
+import { GetLabelByIdRepositoryMock } from "@tests/mocks/get-label-by-id-repository.mock.js";
+import { SaveTodoRepositoryMock } from "@tests/mocks/save-todo-repository.mock.js";
 
 describe("EditTodoInteractor", () => {
    const validation: jest.Mocked<IEditTodoValidation> = {
@@ -22,25 +27,19 @@ describe("EditTodoInteractor", () => {
       isValid: jest.fn(),
    };
 
-   const getTodoRepository: jest.Mocked<IGetTodoByIdRepository> = {
-      execute: jest.fn(),
-   };
+   const getTodoRepository: IGetTodoByIdRepository =
+      new GetTodoByIdRepositoryMock();
 
-   const checkLabelRepository: jest.Mocked<ICheckLabelExistRepository> = {
-      execute: jest.fn(),
-   };
+   const checkLabelRepository: ICheckLabelExistRepository =
+      new CheckLabelExistRepositoryMock();
 
-   const createLabelRepository: jest.Mocked<ICreateLabelRepository> = {
-      execute: jest.fn(),
-   };
+   const createLabelRepository: ICreateLabelRepository =
+      new CreateLabelRepositoryMock();
 
-   const getLabelRepository: jest.Mocked<IGetLabelByIdRepository> = {
-      execute: jest.fn(),
-   };
+   const getLabelRepository: IGetLabelByIdRepository =
+      new GetLabelByIdRepositoryMock();
 
-   const saveTodoRepository: jest.Mocked<ISaveTodoRepository> = {
-      execute: jest.fn(),
-   };
+   const saveTodoRepository: ISaveTodoRepository = new SaveTodoRepositoryMock();
 
    const presenter: jest.Mocked<IEditTodoPresenter> = {
       present: jest.fn(),
@@ -79,8 +78,12 @@ describe("EditTodoInteractor", () => {
    beforeEach(() => {
       jest.clearAllMocks();
       validation.isValid.mockReturnValue(true);
-      getTodoRepository.execute.mockResolvedValue(fakeTodoToEdit);
-      saveTodoRepository.execute.mockResolvedValue(fakeTodoToEdit);
+      jest
+         .spyOn(getTodoRepository, "getTodoById")
+         .mockResolvedValue(fakeTodoToEdit);
+      jest
+         .spyOn(saveTodoRepository, "saveTodo")
+         .mockResolvedValue(fakeTodoToEdit);
    });
 
    it("should call validation and isValid", async () => {
@@ -108,7 +111,7 @@ describe("EditTodoInteractor", () => {
    });
 
    it("should return not found error if todo doesn't exist", async () => {
-      getTodoRepository.execute.mockResolvedValue(null);
+      jest.spyOn(getTodoRepository, "getTodoById").mockResolvedValue(null);
 
       await interactor.execute(input);
 
@@ -149,14 +152,20 @@ describe("EditTodoInteractor", () => {
          setColor: jest.fn(),
          setName: jest.fn(),
       };
-      checkLabelRepository.execute.mockResolvedValue(false);
+      jest
+         .spyOn(checkLabelRepository, "checkLabelExists")
+         .mockResolvedValue(false);
       labelFactory.create.mockReturnValue(newLabelMock);
-      createLabelRepository.execute.mockResolvedValue(newLabelMock);
+      jest
+         .spyOn(createLabelRepository, "createLabel")
+         .mockResolvedValue(newLabelMock);
 
       await interactor.execute(input);
 
-      expect(checkLabelRepository.execute).toHaveBeenCalledWith("urgent");
-      expect(createLabelRepository.execute).toHaveBeenCalledTimes(1);
+      expect(checkLabelRepository.checkLabelExists).toHaveBeenCalledWith(
+         "urgent",
+      );
+      expect(createLabelRepository.createLabel).toHaveBeenCalledTimes(1);
       expect(fakeTodoToEdit.addLabel).toHaveBeenCalledTimes(1);
    });
 
@@ -169,13 +178,17 @@ describe("EditTodoInteractor", () => {
          setName: jest.fn(),
       };
       input.input.newData.labelIds = ["label3"];
-      getLabelRepository.execute.mockResolvedValue(existingLabel);
+      jest
+         .spyOn(getLabelRepository, "getLabelById")
+         .mockResolvedValue(existingLabel);
       input.input.newData.newLabelTitles = [];
-      getLabelRepository.execute.mockResolvedValue(existingLabel);
+      jest
+         .spyOn(getLabelRepository, "getLabelById")
+         .mockResolvedValue(existingLabel);
 
       await interactor.execute(input);
 
-      expect(getLabelRepository.execute).toHaveBeenCalledWith("label3");
+      expect(getLabelRepository.getLabelById).toHaveBeenCalledWith("label3");
       expect(fakeTodoToEdit.addLabel).toHaveBeenCalledTimes(1);
    });
 
@@ -202,11 +215,11 @@ describe("EditTodoInteractor", () => {
          reportDeadline: jest.fn(),
       };
 
-      saveTodoRepository.execute.mockResolvedValue(updatedTodo);
+      jest.spyOn(saveTodoRepository, "saveTodo").mockResolvedValue(updatedTodo);
 
       await interactor.execute(input);
 
-      expect(saveTodoRepository.execute).toHaveBeenCalledTimes(1);
+      expect(saveTodoRepository.saveTodo).toHaveBeenCalledTimes(1);
 
       expect(presenter.present).toHaveBeenCalledWith({
          success: true,
@@ -228,7 +241,7 @@ describe("EditTodoInteractor", () => {
 
    it("should return error if unexpected error occurs", async () => {
       const error = new Error("Unexpected failure");
-      getTodoRepository.execute.mockRejectedValueOnce(error);
+      jest.spyOn(getTodoRepository, "getTodoById").mockRejectedValueOnce(error);
 
       await interactor.execute(input);
 

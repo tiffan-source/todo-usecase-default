@@ -2,11 +2,10 @@ import { allLabelsByRepoMock } from "../mocks/label.mock.js";
 import { GetAllLabelInteractor } from "@label-retrieval/usecases/get-all-label.interactor.js";
 import { jest } from "@jest/globals";
 import type { IGetAllLabelRepository } from "todo-usecase";
+import { GetAllLabelRepositoryMock } from "@tests/mocks/get-all-label-repository.mock.js";
 
 describe("GetAllLabelInteractor", () => {
-   const repository: jest.Mocked<IGetAllLabelRepository> = {
-      execute: jest.fn(),
-   };
+   const repository: IGetAllLabelRepository = new GetAllLabelRepositoryMock();
 
    const presenter = {
       present: jest.fn(),
@@ -19,9 +18,7 @@ describe("GetAllLabelInteractor", () => {
       jest.clearAllMocks();
    });
 
-   beforeEach(() => {
-      repository.execute = jest.fn(() => Promise.resolve(allLabelsByRepoMock));
-   });
+   beforeEach(() => {});
 
    it("should be defined", () => {
       expect(GetAllLabelInteractor).toBeDefined();
@@ -30,7 +27,7 @@ describe("GetAllLabelInteractor", () => {
    });
 
    it("should call execute of repository to get all Label", async () => {
-      const verifyRepo = jest.spyOn(repository, "execute");
+      const verifyRepo = jest.spyOn(repository, "getAllLabels");
 
       await getAllLabel.execute({ timestamp: "randomtime", input: undefined });
 
@@ -59,7 +56,7 @@ describe("GetAllLabelInteractor", () => {
 
    it("should call presenter with error if repository fails", async () => {
       const error = new Error("Repository error");
-      repository.execute = jest.fn(() => Promise.reject(error));
+      jest.spyOn(repository, "getAllLabels").mockRejectedValue(error);
       const verifyPresenter = jest.spyOn(presenter, "present");
 
       await getAllLabel.execute({ timestamp: "randomtime", input: undefined });

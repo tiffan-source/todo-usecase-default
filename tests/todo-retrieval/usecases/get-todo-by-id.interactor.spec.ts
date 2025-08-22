@@ -9,7 +9,7 @@ import {
 } from "todo-usecase";
 import { todoByIdRepoMock } from "@tests/todo-retrieval/mocks/todos.mock.js";
 import { jest } from "@jest/globals";
-import type { ITodo } from "todo-entity";
+import { GetTodoByIdRepositoryMock } from "@tests/mocks/get-todo-by-id-repository.mock.js";
 
 describe("GetTodoByIdInteractor", () => {
    afterEach(() => {
@@ -29,9 +29,8 @@ describe("GetTodoByIdInteractor", () => {
       getErrors: jest.fn(),
    };
 
-   const mockRepository: jest.Mocked<IGetTodoByIdRepository> = {
-      execute: jest.fn(),
-   };
+   const mockRepository: IGetTodoByIdRepository =
+      new GetTodoByIdRepositoryMock();
 
    const mockPresenter: jest.Mocked<IGetTodoByIdPresenter> = {
       present: jest.fn(),
@@ -44,9 +43,10 @@ describe("GetTodoByIdInteractor", () => {
    );
 
    beforeEach(() => {
+      jest.clearAllMocks();
       mockValidation.isValid = jest.fn(() => true);
-      mockRepository.execute = jest
-         .fn<() => Promise<ITodo>>()
+      jest
+         .spyOn(mockRepository, "getTodoById")
          .mockResolvedValue(todoByIdRepoMock);
    });
 
@@ -88,7 +88,7 @@ describe("GetTodoByIdInteractor", () => {
    });
 
    it("should call execute of get repository to get todo from db", async () => {
-      const verifyRepo = jest.spyOn(mockRepository, "execute");
+      const verifyRepo = jest.spyOn(mockRepository, "getTodoById");
 
       await interactor.execute(inputTodoTest);
 
@@ -98,7 +98,7 @@ describe("GetTodoByIdInteractor", () => {
    it("should call presenter with error if todo not found", async () => {
       const verifyPresenter = jest.spyOn(mockPresenter, "present");
 
-      mockRepository.execute.mockResolvedValueOnce(null);
+      jest.spyOn(mockRepository, "getTodoById").mockResolvedValueOnce(null);
 
       await interactor.execute(inputTodoTest);
 
@@ -117,7 +117,9 @@ describe("GetTodoByIdInteractor", () => {
       const verifyPresenter = jest.spyOn(mockPresenter, "present");
       const repoError = new Error("Database connection failed");
 
-      mockRepository.execute.mockRejectedValueOnce(repoError);
+      jest
+         .spyOn(mockRepository, "getTodoById")
+         .mockRejectedValueOnce(repoError);
 
       await interactor.execute(inputTodoTest);
 

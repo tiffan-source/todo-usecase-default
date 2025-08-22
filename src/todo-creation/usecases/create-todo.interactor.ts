@@ -14,7 +14,7 @@ import type {
 export class CreateTodoInteractor implements ICreateTodoInteractor {
    constructor(
       private readonly validation: ICreateTodoValidation,
-      private readonly repository: ICreateTodoRepository,
+      private readonly createTodoRepository: ICreateTodoRepository,
       private readonly createLabelRepository: ICreateLabelRepository,
       private readonly checkLabelRepository: ICheckLabelExistRepository,
       private readonly getLabelRepository: IGetLabelByIdRepository,
@@ -48,10 +48,11 @@ export class CreateTodoInteractor implements ICreateTodoInteractor {
          // Label gestion
 
          for (const label of newLabelTitles || []) {
-            const labelExist = await this.checkLabelRepository.execute(label);
+            const labelExist =
+               await this.checkLabelRepository.checkLabelExists(label);
 
             if (!labelExist) {
-               const newLabel = await this.createLabelRepository.execute(
+               const newLabel = await this.createLabelRepository.createLabel(
                   this.labelFactory.create(label),
                );
                todo.addLabel(newLabel);
@@ -59,7 +60,7 @@ export class CreateTodoInteractor implements ICreateTodoInteractor {
          }
 
          for (const labelId of labelIds || []) {
-            const label = await this.getLabelRepository.execute(labelId);
+            const label = await this.getLabelRepository.getLabelById(labelId);
 
             if (label) {
                todo.addLabel(label);
@@ -71,7 +72,7 @@ export class CreateTodoInteractor implements ICreateTodoInteractor {
             todo.addDeadline(dueDate);
          }
 
-         const todoResult = await this.repository.execute(todo);
+         const todoResult = await this.createTodoRepository.createTodo(todo);
 
          return this.presenter.present({
             success: true,

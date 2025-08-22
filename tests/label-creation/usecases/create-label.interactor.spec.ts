@@ -11,15 +11,15 @@ import { CreateLabelInteractor } from "@label-creation/usecases/create-label.int
 import type { ILabelFactory } from "todo-entity";
 import { jest } from "@jest/globals";
 import { inputLabelMock } from "@tests/label-creation/mocks/label.mock.js";
+import { CreateLabelRepositoryMock } from "@tests/mocks/create-label-repository.mock.js";
+import { CheckLabelExistRepositoryMock } from "@tests/mocks/check-label-exist-repository.mock.js";
 
 describe("CreateLabelInteractor", () => {
-   const createLabelRepository: jest.Mocked<ICreateLabelRepository> = {
-      execute: jest.fn(),
-   };
+   const createLabelRepository: ICreateLabelRepository =
+      new CreateLabelRepositoryMock();
 
-   const checkLabelRepository: jest.Mocked<ICheckLabelExistRepository> = {
-      execute: jest.fn(),
-   };
+   const checkLabelRepository: ICheckLabelExistRepository =
+      new CheckLabelExistRepositoryMock();
 
    const presenter: jest.Mocked<ICreateLabelPresenter> = {
       present: jest.fn(),
@@ -59,7 +59,9 @@ describe("CreateLabelInteractor", () => {
    beforeEach(() => {
       validator.isValid = jest.fn<() => boolean>().mockReturnValue(true);
       labelFactory.create = jest.fn().mockReturnValue(inputLabelMock);
-      checkLabelRepository.execute = jest.fn(() => Promise.resolve(false));
+      checkLabelRepository.checkLabelExists = jest.fn(() =>
+         Promise.resolve(false),
+      );
    });
 
    it("should be defined", () => {
@@ -79,7 +81,10 @@ describe("CreateLabelInteractor", () => {
    });
 
    it("should call checkLabelRepository to check if label already exists", async () => {
-      const verifyCheckLabel = jest.spyOn(checkLabelRepository, "execute");
+      const verifyCheckLabel = jest.spyOn(
+         checkLabelRepository,
+         "checkLabelExists",
+      );
 
       await createLabelInteractor.execute(inputLabel);
 
@@ -90,7 +95,10 @@ describe("CreateLabelInteractor", () => {
    });
 
    it("should call createLabelRepository to save label in db", async () => {
-      const verifyCreateLabel = jest.spyOn(createLabelRepository, "execute");
+      const verifyCreateLabel = jest.spyOn(
+         createLabelRepository,
+         "createLabel",
+      );
 
       await createLabelInteractor.execute(inputLabel);
 
@@ -135,7 +143,10 @@ describe("CreateLabelInteractor", () => {
    it("it should call present with error if execute of create label repository return error", async () => {
       const verifyPresent = jest.spyOn(presenter, "present");
       const repoError = new Error("Repository error");
-      createLabelRepository.execute.mockRejectedValue(repoError);
+      // createLabelRepository.createLabel.mockRejectedValue(repoError);
+      jest
+         .spyOn(createLabelRepository, "createLabel")
+         .mockRejectedValue(repoError);
 
       await createLabelInteractor.execute(inputLabel);
 
@@ -153,7 +164,10 @@ describe("CreateLabelInteractor", () => {
    it("it should call present with error if execute of check label repository return error", async () => {
       const verifyPresent = jest.spyOn(presenter, "present");
       const repoError = new Error("Repository error");
-      checkLabelRepository.execute.mockRejectedValue(repoError);
+      // checkLabelRepository.checkLabelExists.mockRejectedValue(repoError);
+      jest
+         .spyOn(checkLabelRepository, "checkLabelExists")
+         .mockRejectedValue(repoError);
 
       await createLabelInteractor.execute(inputLabel);
 
@@ -170,7 +184,10 @@ describe("CreateLabelInteractor", () => {
 
    it("it should call present with error if execute of check label repository return true", async () => {
       const verifyPresent = jest.spyOn(presenter, "present");
-      checkLabelRepository.execute.mockResolvedValue(true);
+      // checkLabelRepository.checkLabelExists.mockResolvedValue(true);
+      jest
+         .spyOn(checkLabelRepository, "checkLabelExists")
+         .mockResolvedValue(true);
 
       await createLabelInteractor.execute(inputLabel);
 

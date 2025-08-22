@@ -4,7 +4,7 @@ const presetConfig = createDefaultEsmPreset({
    //...options
 });
 
-import config from "./tsconfig.json" assert { type: "json" };
+import config from "./tsconfig.json" with { type: "json" };
 
 /** @type {import("jest").Config} **/
 export default {
