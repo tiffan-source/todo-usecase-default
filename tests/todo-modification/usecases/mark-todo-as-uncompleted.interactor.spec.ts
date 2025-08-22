@@ -172,4 +172,29 @@ describe("MarkTodoAsUncompletedInteractor", () => {
          },
       });
    });
+
+   it("should map todos with labels correctly", async () => {
+      const verifyPresenter = jest.spyOn(presenter, "present");
+
+      await markTodoAsUncompleted.execute(inputTodoTest);
+
+      expect(verifyPresenter).toHaveBeenCalledWith({
+         success: true,
+         error: null,
+         result: {
+            todoId: outputTodoCompletedRepositoryMock.getId(),
+            title: outputTodoCompletedRepositoryMock.getTitle(),
+            description: outputTodoCompletedRepositoryMock.getDescription(),
+            doneDate: undefined,
+            dueDate: outputTodoCompletedRepositoryMock.getDueDate(),
+            labels: outputTodoCompletedRepositoryMock
+               .getLabels()
+               ?.map((label) => ({
+                  id: label.getId(),
+                  name: label.getName(),
+                  color: label.getColor() ? label.getColor() : null,
+               })),
+         },
+      });
+   });
 });

@@ -1,5 +1,8 @@
 import { GetAllTodoInteractor } from "@todo-retrieval/usecases/get-all-todo.interactor.js";
-import { allTodosByRepoMock } from "@tests/todo-retrieval/mocks/todos.mock.js";
+import {
+   allTodosByRepoMock,
+   mockTodoWithLabels,
+} from "@tests/todo-retrieval/mocks/todos.mock.js";
 import { jest } from "@jest/globals";
 import {
    ValidationError,
@@ -33,7 +36,6 @@ describe("GetAllTodoInteractor", () => {
    });
 
    beforeEach(() => {
-      jest.clearAllMocks();
       validation.isValid = jest.fn<() => boolean>().mockReturnValue(true);
       jest
          .spyOn(repository, "getAllTodos")
@@ -128,6 +130,86 @@ describe("GetAllTodoInteractor", () => {
                color: label.getColor() ? label.getColor() : null,
             })),
          })),
+      });
+   });
+
+   it("should call presenter with error if repository throws error", async () => {
+      const verify = jest.spyOn(presenter, "present");
+      const repoError = new Error("Database connection failed");
+
+      jest.spyOn(repository, "getAllTodos").mockRejectedValue(repoError);
+
+      await getAllTodo.execute({ timestamp: "randomtime", input: {} });
+
+      expect(verify).toHaveBeenNthCalledWith(1, {
+         success: false,
+         error: [
+            {
+               type: "Unexpected",
+               message: repoError.message,
+            },
+         ],
+      });
+   });
+
+   it("should map todos with labels correctly", async () => {
+      const verifyPresenter = jest.spyOn(presenter, "present");
+
+      jest
+         .spyOn(repository, "getAllTodos")
+         .mockResolvedValue(mockTodoWithLabels);
+
+      await getAllTodo.execute({
+         timestamp: "randomtime",
+         input: { filters: {} },
+      });
+
+      expect(verifyPresenter).toHaveBeenCalledWith({
+         success: true,
+         result: [
+            {
+               todoId: "1",
+               title: "Première tâche",
+               description: "Description de la première tâche",
+               dueDate: undefined,
+               doneDate: undefined,
+               labels: [
+                  {
+                     id: "work",
+                     name: "travail",
+                     color: "#0000ff",
+                  },
+               ],
+            },
+            {
+               todoId: "2",
+               title: "Deuxième tâche",
+               description: "Description de la deuxième tâche",
+               dueDate: undefined,
+               doneDate: undefined,
+               labels: [
+                  {
+                     id: "personal",
+                     name: "personnel",
+                     color: "#00ff00",
+                  },
+                  {
+                     id: "low-priority",
+                     name: "basse priorité",
+                     color: "#ffff00",
+                  },
+               ],
+            },
+            {
+               todoId: "3",
+               title: "Troisième tâche",
+               description: "Description de la troisième tâche",
+               dueDate: undefined,
+               doneDate: undefined,
+               labels: [],
+            },
+         ],
+         error: null,
       });
    });
 });

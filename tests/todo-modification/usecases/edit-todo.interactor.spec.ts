@@ -159,7 +159,8 @@ describe("EditTodoInteractor", () => {
       jest
          .spyOn(createLabelRepository, "createLabel")
          .mockResolvedValue(newLabelMock);
-
+      input.input.newData.labelIds = [];
+      input.input.newData.newLabelTitles = ["urgent"];
       await interactor.execute(input);
 
       expect(checkLabelRepository.checkLabelExists).toHaveBeenCalledWith(

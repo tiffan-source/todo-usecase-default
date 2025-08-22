@@ -169,4 +169,48 @@ describe("MarkTodoAsCompletedInteractor", () => {
          },
       });
    });
+
+   it("should call presenter with error if repository throws unexpected error", async () => {
+      const verifyPresenter = jest.spyOn(presenter, "present");
+      const repoError = new Error("Database connection failed");
+
+      jest.spyOn(getTodoRepository, "getTodoById").mockRejectedValue(repoError);
+
+      await markTodoAsCompleted.execute(inputTodoTest);
+
+      expect(verifyPresenter).toHaveBeenNthCalledWith(1, {
+         success: false,
+         error: [
+            {
+               type: "Unexpected",
+               message: repoError.message,
+            },
+         ],
+      });
+   });
+
+   it("should map todos with labels correctly", async () => {
+      const verifyPresenter = jest.spyOn(presenter, "present");
+
+      await markTodoAsCompleted.execute(inputTodoTest);
+
+      expect(verifyPresenter).toHaveBeenCalledWith({
+         success: true,
+         error: null,
+         result: {
+            todoId: outputTodoNonCompletedRepositoryMock.getId(),
+            title: outputTodoNonCompletedRepositoryMock.getTitle(),
+            description: outputTodoNonCompletedRepositoryMock.getDescription(),
+            doneDate: expect.any(Date),
+            dueDate: outputTodoNonCompletedRepositoryMock.getDueDate(),
+            labels: outputTodoNonCompletedRepositoryMock
+               .getLabels()
+               ?.map((label) => ({
+                  id: label.getId(),
+                  name: label.getName(),
+                  color: label.getColor() ? label.getColor() : null,
+               })),
+         },
+      });
+   });
 });
