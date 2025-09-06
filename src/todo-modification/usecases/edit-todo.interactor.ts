@@ -42,7 +42,7 @@ export class EditTodoInteractor implements IEditTodoInteractor {
 
          const todoId = input.input.todoId;
 
-         const todo = await this.getTodoRepository.execute(todoId);
+         const todo = await this.getTodoRepository.getTodoById(todoId);
 
          if (!todo) {
             return this.presenter.present({
@@ -71,10 +71,11 @@ export class EditTodoInteractor implements IEditTodoInteractor {
          });
 
          for (const label of newLabelTitles || []) {
-            const labelExist = await this.checkLabelRepository.execute(label);
+            const labelExist =
+               await this.checkLabelRepository.checkLabelExists(label);
 
             if (!labelExist) {
-               const newLabel = await this.createLabelRepository.execute(
+               const newLabel = await this.createLabelRepository.createLabel(
                   this.labelFactory.create(label),
                );
                todo.addLabel(newLabel);
@@ -84,14 +85,14 @@ export class EditTodoInteractor implements IEditTodoInteractor {
          for (const labelId of labelIds || []) {
             if (todo.getLabels().some((l) => l.getId() === labelId)) continue;
 
-            const label = await this.getLabelRepository.execute(labelId);
+            const label = await this.getLabelRepository.getLabelById(labelId);
 
             if (label) {
                todo.addLabel(label);
             }
          }
 
-         const updatedTodo = await this.saveTodoRepository.execute(todo);
+         const updatedTodo = await this.saveTodoRepository.saveTodo(todo);
 
          return this.presenter.present({
             success: true,
@@ -101,7 +102,7 @@ export class EditTodoInteractor implements IEditTodoInteractor {
                description: updatedTodo.getDescription(),
                doneDate: updatedTodo.getDoneDate(),
                dueDate: updatedTodo.getDueDate(),
-               labels: updatedTodo.getLabels()?.map((label) => ({
+               labels: updatedTodo.getLabels().map((label) => ({
                   id: label.getId(),
                   name: label.getName(),
                   color: label.getColor() ? label.getColor() : null,

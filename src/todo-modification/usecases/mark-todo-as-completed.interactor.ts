@@ -34,7 +34,7 @@ export class MarkTodoAsCompletedInteractor
          }
 
          const todoId = input.input.todoId;
-         const todo = await this.getTodoRepository.execute(todoId);
+         const todo = await this.getTodoRepository.getTodoById(todoId);
 
          if (!todo) {
             return this.presenter.present({
@@ -50,7 +50,7 @@ export class MarkTodoAsCompletedInteractor
 
          todo.accomplish();
 
-         await this.saveTodoRepository.execute(todo);
+         await this.saveTodoRepository.saveTodo(todo);
 
          return this.presenter.present({
             success: true,

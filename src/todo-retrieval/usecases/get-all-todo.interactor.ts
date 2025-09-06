@@ -30,7 +30,7 @@ export class GetAllTodoInteractor implements IGetAllTodoInteractor {
             });
          }
 
-         const todos = await this.repository.execute({
+         const todos = await this.repository.getAllTodos({
             filters: {
                done: filters?.done,
                dueDate: filters?.dueDate,

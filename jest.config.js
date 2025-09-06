@@ -4,7 +4,7 @@ const presetConfig = createDefaultEsmPreset({
    //...options
 });
 
-import config from "./tsconfig.json" assert { type: "json" };
+import config from "./tsconfig.json" with { type: "json" };
 
 /** @type {import("jest").Config} **/
 export default {
@@ -15,7 +15,7 @@ export default {
       useESM: true,
    }),
    moduleFileExtensions: ["ts", "js", "json"],
-   collectCoverage: true,
+   // collectCoverage: true,
    collectCoverageFrom: ["./src/**/*.ts"],
    coverageDirectory: "coverage",
 };

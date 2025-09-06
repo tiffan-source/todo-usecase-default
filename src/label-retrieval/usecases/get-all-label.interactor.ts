@@ -14,12 +14,12 @@ export class GetAllLabelInteractor implements IGetAllLabelInteractor {
    async execute(input: inputDto<void>): Promise<void> {
       try {
          console.log("Executing GetAllLabelInteractor at", input.timestamp);
-         const labels = await this.repository.execute();
+         const labels = await this.repository.getAllLabels();
 
          this.presenter.present({
             success: true,
             error: null,
-            result: labels.map((label) => ({
+            result: labels?.map((label) => ({
                id: label.getId(),
                name: label.getName(),
                color: label.getColor() ? label.getColor() : null,
