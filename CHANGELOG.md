@@ -1,5 +1,11 @@
 # todo-usecase-default
 
+## 3.2.1
+
+### Patch Changes
+
+- 022a0da: set todo-entity-default as dev dependencie
+
 ## 3.2.0
 
 ### Minor Changes
@@ -37,8 +43,8 @@
 ### Minor Changes
 
 - 339af0c: - create label interface implementation for interactor and validation
-   - delete label interface implementation for interactor and validation
-   - get all label interface implementation for interactor
+  - delete label interface implementation for interactor and validation
+  - get all label interface implementation for interactor
 
 ## 1.7.1
 
