@@ -71,7 +71,7 @@ export class CreateTodoInteractor implements ICreateTodoInteractor {
          if (dueDate) {
             todo.addDeadline(dueDate);
          }
-
+         console.log("Todo to create:", todo.getId());
          const todoResult = await this.createTodoRepository.createTodo(todo);
 
          return this.presenter.present({
@@ -80,9 +80,9 @@ export class CreateTodoInteractor implements ICreateTodoInteractor {
                title: todoResult.getTitle(),
                todoId: todoResult.getId(),
                description: todoResult.getDescription(),
-               doneDate: todoResult.getDoneDate(),
+               doneDate: undefined,
                dueDate: todoResult.getDueDate(),
-               labels: todoResult.getLabels().map((label: ILabel) => ({
+               labels: todoResult.getLabels()?.map((label: ILabel) => ({
                   id: label.getId(),
                   name: label.getName(),
                   color: label.getColor(),

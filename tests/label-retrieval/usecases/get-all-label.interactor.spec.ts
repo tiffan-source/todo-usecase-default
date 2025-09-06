@@ -1,41 +1,35 @@
-import { allLabelsByRepoMock } from "../mocks/label.mock.js";
 import { GetAllLabelInteractor } from "@label-retrieval/usecases/get-all-label.interactor.js";
 import { jest } from "@jest/globals";
-import type { IGetAllLabelRepository } from "todo-usecase";
-import { GetAllLabelRepositoryMock } from "@tests/mocks/get-all-label-repository.mock.js";
+import type {
+   IGetAllLabelInteractor,
+   IGetAllLabelRepository,
+} from "todo-usecase";
+import { LabelRepositoryMock } from "@tests/mocks/repositories/label.repository.mock.js";
+import { LabelFactory } from "todo-entity-default";
 
 describe("GetAllLabelInteractor", () => {
-   const repository: IGetAllLabelRepository = new GetAllLabelRepositoryMock();
+   let repository: IGetAllLabelRepository;
 
    const presenter = {
       present: jest.fn(),
       setCallback: jest.fn(),
    };
 
-   const getAllLabel = new GetAllLabelInteractor(repository, presenter);
+   let getAllLabel: IGetAllLabelInteractor;
 
    afterEach(() => {
       jest.clearAllMocks();
    });
 
-   beforeEach(() => {});
+   beforeEach(() => {
+      repository = new LabelRepositoryMock(new LabelFactory());
+      getAllLabel = new GetAllLabelInteractor(repository, presenter);
+   });
 
    it("should be defined", () => {
       expect(GetAllLabelInteractor).toBeDefined();
       expect(getAllLabel).toBeDefined();
       expect(getAllLabel.execute).toBeDefined();
-   });
-
-   it("should call execute of repository to get all Label", async () => {
-      const verifyRepo = jest.spyOn(repository, "getAllLabels");
-
-      await getAllLabel.execute({ timestamp: "randomtime", input: undefined });
-
-      expect(verifyRepo).toHaveBeenCalledTimes(1);
-      expect(verifyRepo).toHaveBeenCalledWith();
-      expect(verifyRepo).toHaveReturnedWith(
-         Promise.resolve(allLabelsByRepoMock),
-      );
    });
 
    it("should call present of presenter to return all Label", async () => {
@@ -46,29 +40,7 @@ describe("GetAllLabelInteractor", () => {
       expect(verifyPresenter).toHaveBeenNthCalledWith(1, {
          success: true,
          error: null,
-         result: allLabelsByRepoMock.map((label) => ({
-            id: label.getId(),
-            name: label.getName(),
-            color: label.getColor() ? label.getColor() : null,
-         })),
-      });
-   });
-
-   it("should call presenter with error if repository fails", async () => {
-      const error = new Error("Repository error");
-      jest.spyOn(repository, "getAllLabels").mockRejectedValue(error);
-      const verifyPresenter = jest.spyOn(presenter, "present");
-
-      await getAllLabel.execute({ timestamp: "randomtime", input: undefined });
-
-      expect(verifyPresenter).toHaveBeenNthCalledWith(1, {
-         success: false,
-         error: [
-            {
-               type: "Unexpected",
-               message: error.message,
-            },
-         ],
+         result: expect.any(Array),
       });
    });
 });

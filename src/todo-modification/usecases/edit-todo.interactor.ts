@@ -102,7 +102,7 @@ export class EditTodoInteractor implements IEditTodoInteractor {
                description: updatedTodo.getDescription(),
                doneDate: updatedTodo.getDoneDate(),
                dueDate: updatedTodo.getDueDate(),
-               labels: updatedTodo.getLabels()?.map((label) => ({
+               labels: updatedTodo.getLabels().map((label) => ({
                   id: label.getId(),
                   name: label.getName(),
                   color: label.getColor() ? label.getColor() : null,

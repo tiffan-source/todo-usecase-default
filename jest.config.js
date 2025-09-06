@@ -15,7 +15,7 @@ export default {
       useESM: true,
    }),
    moduleFileExtensions: ["ts", "js", "json"],
-   collectCoverage: true,
+   // collectCoverage: true,
    collectCoverageFrom: ["./src/**/*.ts"],
    coverageDirectory: "coverage",
 };

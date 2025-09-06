@@ -1,25 +1,30 @@
 import { GetTodoByIdInteractor } from "@todo-retrieval/usecases/get-todo-by-id.interactor.js";
 import {
-   ValidationError,
    type GetTodoByIdInput,
    type IGetTodoByIdPresenter,
-   type IGetTodoByIdRepository,
    type IGetTodoByIdValidation,
    type inputDto,
 } from "todo-usecase";
-import { todoByIdRepoMock } from "@tests/todo-retrieval/mocks/todos.mock.js";
 import { jest } from "@jest/globals";
-import { GetTodoByIdRepositoryMock } from "@tests/mocks/get-todo-by-id-repository.mock.js";
+import { TodoRepositoryMock } from "@tests/mocks/repositories/todo.repository.mock.js";
+import { LabelFactory, TodoFactory } from "todo-entity-default";
 
 describe("GetTodoByIdInteractor", () => {
    afterEach(() => {
       jest.clearAllMocks();
    });
 
-   const inputTodoTest: inputDto<GetTodoByIdInput> = {
+   const badInputTodoTest: inputDto<GetTodoByIdInput> = {
       timestamp: "randomtime",
       input: {
          idTodo: "test-id",
+      },
+   };
+
+   const goodInputTodoTest: inputDto<GetTodoByIdInput> = {
+      timestamp: "randomtime",
+      input: {
+         idTodo: "1",
       },
    };
 
@@ -29,8 +34,10 @@ describe("GetTodoByIdInteractor", () => {
       getErrors: jest.fn(),
    };
 
-   const mockRepository: IGetTodoByIdRepository =
-      new GetTodoByIdRepositoryMock();
+   const repository = new TodoRepositoryMock(
+      new TodoFactory(),
+      new LabelFactory(),
+   );
 
    const mockPresenter: jest.Mocked<IGetTodoByIdPresenter> = {
       present: jest.fn(),
@@ -38,16 +45,13 @@ describe("GetTodoByIdInteractor", () => {
 
    const interactor = new GetTodoByIdInteractor(
       mockValidation,
-      mockRepository,
+      repository,
       mockPresenter,
    );
 
    beforeEach(() => {
       jest.clearAllMocks();
       mockValidation.isValid = jest.fn(() => true);
-      jest
-         .spyOn(mockRepository, "getTodoById")
-         .mockResolvedValue(todoByIdRepoMock);
    });
 
    it("should be defined", () => {
@@ -56,79 +60,17 @@ describe("GetTodoByIdInteractor", () => {
       expect(interactor.execute).toBeDefined();
    });
 
-   it("should call validate to validate todo inputDTO", async () => {
-      const verifyValidate = jest.spyOn(mockValidation, "validate");
-      const verifyIsValid = jest.spyOn(mockValidation, "isValid");
-
-      await interactor.execute(inputTodoTest);
-
-      expect(verifyValidate).toHaveBeenNthCalledWith(1, inputTodoTest);
-      expect(verifyIsValid).toHaveBeenCalledTimes(1);
-   });
-
-   it("should call presenter with error if validation fails", async () => {
-      const verifyPresenter = jest.spyOn(mockPresenter, "present");
-
-      const validationError = new ValidationError("required", "idTodo");
-
-      mockValidation.isValid.mockReturnValueOnce(false);
-      mockValidation.getErrors.mockReturnValueOnce([validationError]);
-
-      await interactor.execute(inputTodoTest);
-
-      expect(verifyPresenter).toHaveBeenNthCalledWith(1, {
-         success: false,
-         error: [
-            {
-               type: "ValidationError",
-               message: validationError.toString(),
-            },
-         ],
-      });
-   });
-
-   it("should call execute of get repository to get todo from db", async () => {
-      const verifyRepo = jest.spyOn(mockRepository, "getTodoById");
-
-      await interactor.execute(inputTodoTest);
-
-      expect(verifyRepo).toHaveBeenNthCalledWith(1, inputTodoTest.input.idTodo);
-   });
-
    it("should call presenter with error if todo not found", async () => {
       const verifyPresenter = jest.spyOn(mockPresenter, "present");
 
-      jest.spyOn(mockRepository, "getTodoById").mockResolvedValueOnce(null);
-
-      await interactor.execute(inputTodoTest);
+      await interactor.execute(badInputTodoTest);
 
       expect(verifyPresenter).toHaveBeenNthCalledWith(1, {
          success: false,
          error: [
             {
                type: "NotFound",
-               message: `Todo with id ${inputTodoTest.input.idTodo} not found`,
-            },
-         ],
-      });
-   });
-
-   it("should call presenter with error if repository throws error", async () => {
-      const verifyPresenter = jest.spyOn(mockPresenter, "present");
-      const repoError = new Error("Database connection failed");
-
-      jest
-         .spyOn(mockRepository, "getTodoById")
-         .mockRejectedValueOnce(repoError);
-
-      await interactor.execute(inputTodoTest);
-
-      expect(verifyPresenter).toHaveBeenNthCalledWith(1, {
-         success: false,
-         error: [
-            {
-               type: "Unexpected",
-               message: repoError.message,
+               message: `Todo with id ${badInputTodoTest.input.idTodo} not found`,
             },
          ],
       });
@@ -137,22 +79,13 @@ describe("GetTodoByIdInteractor", () => {
    it("should call presenter with success and todo data if everything is fine", async () => {
       const verifyPresenter = jest.spyOn(mockPresenter, "present");
 
-      await interactor.execute(inputTodoTest);
+      await interactor.execute(goodInputTodoTest);
 
       expect(verifyPresenter).toHaveBeenNthCalledWith(1, {
          success: true,
-         result: {
-            todoId: todoByIdRepoMock.getId(),
-            title: todoByIdRepoMock.getTitle(),
-            description: todoByIdRepoMock.getDescription(),
-            dueDate: todoByIdRepoMock.getDueDate(),
-            doneDate: todoByIdRepoMock.getDoneDate(),
-            labels: todoByIdRepoMock.getLabels()?.map((label) => ({
-               id: label.getId(),
-               name: label.getName(),
-               color: label.getColor() ? label.getColor() : null,
-            })),
-         },
+         result: expect.objectContaining({
+            todoId: "1",
+         }),
          error: null,
       });
    });

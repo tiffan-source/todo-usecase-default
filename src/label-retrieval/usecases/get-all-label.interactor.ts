@@ -19,7 +19,7 @@ export class GetAllLabelInteractor implements IGetAllLabelInteractor {
          this.presenter.present({
             success: true,
             error: null,
-            result: labels.map((label) => ({
+            result: labels?.map((label) => ({
                id: label.getId(),
                name: label.getName(),
                color: label.getColor() ? label.getColor() : null,
