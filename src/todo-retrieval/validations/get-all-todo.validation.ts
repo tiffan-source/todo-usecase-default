@@ -13,7 +13,7 @@ export class GetAllTodoValidation
    validate(input: inputDto<GetAllTodoInput>): void {
       const { filters } = input.input;
       if (filters) {
-         const allowedKeys = ["done", "dueDate"];
+         const allowedKeys = ["done", "dueDate", "labelIds"];
          Object.keys(filters).forEach((key) => {
             if (!allowedKeys.includes(key)) {
                this.validationErrors.push(
