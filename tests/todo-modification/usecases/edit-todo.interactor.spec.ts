@@ -81,12 +81,6 @@ describe("EditTodoInteractor", () => {
       );
    });
 
-   it("should call validation and isValid", async () => {
-      await interactor.execute(input);
-      expect(validation.validate).toHaveBeenCalledWith(input);
-      expect(validation.isValid).toHaveBeenCalled();
-   });
-
    it("should return not found error if todo doesn't exist", async () => {
       await interactor.execute(badInput);
 

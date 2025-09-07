@@ -1,4 +1,5 @@
 import type {
+   GetAllTodoRepositoryInput,
    ICreateTodoRepository,
    IGetAllTodoRepository,
    IGetTodoByIdRepository,
@@ -60,28 +61,41 @@ export class TodoRepositoryMock
       return todo;
    }
 
-   async getAllTodos(): Promise<ITodo[]> {
-      return this.todos.map((todoData) => {
-         const todo: ITodo = this.todoFactory.createWithId(
-            todoData.id,
-            todoData.title,
-         );
-         todo.describe(todoData.description);
-         if (todoData.doneDate !== undefined)
-            todo.accomplish(todoData.doneDate);
-         if (todoData.dueDate !== undefined) todo.addDeadline(todoData.dueDate);
-         // Implement labels in this mock
-         if (todoData?.labels?.length > 0) {
-            todoData.labels.forEach((labelId) => {
-               const label = this.labelFactory.createWithId(
-                  labelId,
-                  "Label " + labelId,
-               );
-               todo.addLabel(label);
-            });
-         }
-         return todo;
-      });
+   async getAllTodos(input: GetAllTodoRepositoryInput): Promise<ITodo[]> {
+      return this.todos
+         .filter((todo) => {
+            if (input.filters?.labelsIds !== undefined) {
+               if (
+                  !input.filters.labelsIds.every((labelId) =>
+                     todo.labels.includes(labelId),
+                  )
+               )
+                  return false;
+            }
+            return true;
+         })
+         .map((todoData) => {
+            const todo: ITodo = this.todoFactory.createWithId(
+               todoData.id,
+               todoData.title,
+            );
+            todo.describe(todoData.description);
+            if (todoData.doneDate !== undefined)
+               todo.accomplish(todoData.doneDate);
+            if (todoData.dueDate !== undefined)
+               todo.addDeadline(todoData.dueDate);
+            // Implement labels in this mock
+            if (todoData?.labels?.length > 0) {
+               todoData.labels.forEach((labelId) => {
+                  const label = this.labelFactory.createWithId(
+                     labelId,
+                     "Label " + labelId,
+                  );
+                  todo.addLabel(label);
+               });
+            }
+            return todo;
+         });
    }
 
    async getTodoById(id: string): Promise<ITodo | null> {

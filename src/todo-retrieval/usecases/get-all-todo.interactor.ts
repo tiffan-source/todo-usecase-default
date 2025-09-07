@@ -34,8 +34,10 @@ export class GetAllTodoInteractor implements IGetAllTodoInteractor {
             filters: {
                done: filters?.done,
                dueDate: filters?.dueDate,
+               labelsIds: filters?.labelIds,
             },
          });
+
          this.presenter.present({
             success: true,
             result: todos.map((todo) => ({
