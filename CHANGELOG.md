@@ -1,5 +1,11 @@
 # todo-usecase-default
 
+## 3.3.1
+
+### Patch Changes
+
+- 83e4785: allow filtering on labelIds
+
 ## 3.3.0
 
 ### Minor Changes
