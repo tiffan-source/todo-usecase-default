@@ -1,5 +1,11 @@
 # todo-usecase-default
 
+## 3.3.0
+
+### Minor Changes
+
+- 4cd7b7c: implement label filter on gettin all todo
+
 ## 3.2.1
 
 ### Patch Changes
