@@ -24,6 +24,8 @@
          "@todo-modification/*": ["./src/todo-modification/*"],
          "@label-creation/*": ["./src/label-creation/*"],
          "@label-retrieval/*": ["./src/label-retrieval/*"],
+         "@label-modification/*": ["./src/label-modification/*"],
+         "@common/*": ["./src/common/*"],
          "@tests/*": ["./tests/*"]
       }
    },

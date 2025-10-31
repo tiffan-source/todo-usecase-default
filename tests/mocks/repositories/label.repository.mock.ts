@@ -5,6 +5,9 @@ import type {
    IDeleteLabelRepository,
    IGetAllLabelRepository,
    IGetLabelByIdRepository,
+   ISaveLabelRepository,
+   SaveLabelRepositoryInput,
+   SaveLabelRepositoryOutput,
 } from "todo-usecase";
 
 export class LabelRepositoryMock
@@ -13,13 +16,41 @@ export class LabelRepositoryMock
       ICreateLabelRepository,
       IDeleteLabelRepository,
       IGetAllLabelRepository,
-      IGetLabelByIdRepository
+      IGetLabelByIdRepository,
+      ISaveLabelRepository
 {
    private labels: { id: string; name: string; color: string }[] = [
       { id: "1", name: "existing-label", color: "red" },
    ];
 
    constructor(private labelFactory: ILabelFactory) {}
+
+   saveLabel(
+      input: SaveLabelRepositoryInput,
+   ): Promise<SaveLabelRepositoryOutput> {
+      const label = input;
+      const id = label.getId();
+      const name = label.getName();
+
+      // Récupère la couleur si disponible sur l'entité
+      let color: string | undefined;
+      try {
+         color = label.getColor() ? label.getColor() : undefined;
+      } catch {
+         color = undefined;
+      }
+
+      const index = this.labels.findIndex((l) => l.id === id);
+      if (index !== -1) {
+         // mise à jour
+         this.labels[index] = { id, name, color: color ?? "" };
+      } else {
+         // création
+         this.labels.push({ id, name, color: color ?? "" });
+      }
+
+      return Promise.resolve(label);
+   }
 
    async checkLabelExists(name: string): Promise<boolean> {
       return this.labels.some((label) => label.name === name);

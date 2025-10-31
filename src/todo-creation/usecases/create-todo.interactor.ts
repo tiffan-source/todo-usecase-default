@@ -71,7 +71,6 @@ export class CreateTodoInteractor implements ICreateTodoInteractor {
          if (dueDate) {
             todo.addDeadline(dueDate);
          }
-         console.log("Todo to create:", todo.getId());
          const todoResult = await this.createTodoRepository.createTodo(todo);
 
          return this.presenter.present({
