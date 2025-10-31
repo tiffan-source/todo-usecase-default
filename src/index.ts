@@ -10,6 +10,10 @@ export * from "./label-creation/usecases/delete-label.interactor.js";
 export * from "./label-creation/validations/create-label.validation.js";
 export * from "./label-creation/validations/delete-label.validation.js";
 
+// 📦 label-modification
+export * from "./label-modification/usecases/edit-label.interactor.js";
+export * from "./label-modification/validations/edit-label.validation.js";
+
 // 📦 label-retrieval
 export * from "./label-retrieval/usecases/get-all-label.interactor.js";
 

@@ -1,5 +1,11 @@
 # todo-usecase-default
 
+## 3.4.0
+
+### Minor Changes
+
+- e663a1a: edit label usecase and validator
+
 ## 3.3.1
 
 ### Patch Changes
