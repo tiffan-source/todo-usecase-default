@@ -1,4 +1,4 @@
-import { Validation } from "@common/validation.js";
+import { Validation } from "../../common/validation.js";
 import type {
    EditLabelInput,
    IEditLabelValidation,
