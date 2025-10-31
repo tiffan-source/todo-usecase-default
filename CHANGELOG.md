@@ -1,5 +1,11 @@
 # todo-usecase-default
 
+## 3.4.1
+
+### Patch Changes
+
+- efeedfb: fix validation import in edit label
+
 ## 3.4.0
 
 ### Minor Changes
